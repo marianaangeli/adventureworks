@@ -1,0 +1,96 @@
+# Configuração de extração do Pipeline AdventureWorks
+# Estratégia: Priorização de tabelas de Vendas, Produtos e Clientes.
+
+tables:
+  # --- SCHEMA SALES (Vendas) ---
+  - schema: "Sales"
+    table: "SalesOrderHeader"
+    primary_key: "SalesOrderID"
+    num_partitions: 8 # ~31k rows. Tabela fato principal (cabeçalho).
+    has_modified_date: true
+
+  - schema: "Sales"
+    table: "SalesOrderDetail"
+    primary_key: "SalesOrderID"
+    num_partitions: 16 # >121k rows. Detalhamento de itens vendidos.
+    has_modified_date: true
+
+  - schema: "Sales"
+    table: "Customer"
+    primary_key: "CustomerID"
+    num_partitions: 8 # Cadastro de clientes vinculado a vendas.
+    has_modified_date: true
+
+  - schema: "Sales"
+    table: "SalesTerritory"
+    primary_key: "TerritoryID"
+    num_partitions: 8 # Relevante para análise geográfica.
+    has_modified_date: true
+
+  - schema: "Sales"
+    table: "Store"
+    primary_key: "BusinessEntityID"
+    num_partitions: 8 # Identifica lojas físicas (B2B).
+    has_modified_date: true
+
+  - schema: "Sales"
+    table: "SalesPerson"
+    primary_key: "BusinessEntityID"
+    num_partitions: 8 # Performance de vendedores.
+    has_modified_date: true
+
+  # --- SCHEMA PRODUCTION (Produtos) ---
+  - schema: "Production"
+    table: "Product"
+    primary_key: "ProductID"
+    num_partitions: 8 # Cadastro mestre de produtos.
+    has_modified_date: true
+
+  - schema: "Production"
+    table: "ProductCategory"
+    primary_key: "ProductCategoryID"
+    num_partitions: 8 # Categorias para agrupamento em dashboards.
+    has_modified_date: true
+
+  - schema: "Production"
+    table: "ProductSubcategory"
+    primary_key: "ProductSubcategoryID"
+    num_partitions: 8 # Detalhamento das categorias.
+    has_modified_date: true
+
+  - schema: "Production"
+    table: "ProductInventory"
+    primary_key: "ProductID"
+    num_partitions: 8 # Saldo de estoque e disponibilidade.
+    has_modified_date: true
+
+  - schema: "Production"
+    table: "WorkOrder"
+    primary_key: "WorkOrderID"
+    num_partitions: 8 # Histórico de produção.
+    has_modified_date: true
+
+  # --- SCHEMA PERSON (Pessoas e Endereços) ---
+  - schema: "Person"
+    table: "Person"
+    primary_key: "BusinessEntityID"
+    num_partitions: 16 # Dados nominais (clientes/vendedores).
+    has_modified_date: true
+
+  - schema: "Person"
+    table: "Address"
+    primary_key: "AddressID"
+    num_partitions: 16 # Base para análise logística e fretes.
+    has_modified_date: true
+
+  - schema: "Person"
+    table: "StateProvince"
+    primary_key: "StateProvinceID"
+    num_partitions: 8 # Normalização de estados.
+    has_modified_date: true
+
+  - schema: "Person"
+    table: "EmailAddress"
+    primary_key: "BusinessEntityID"
+    num_partitions: 16 # Contato para marketing/CRM.
+    has_modified_date: true
